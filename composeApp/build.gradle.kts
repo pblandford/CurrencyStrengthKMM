@@ -9,6 +9,10 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.room)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -25,63 +29,72 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export(libs.kmpnotifier)
             baseName = "ComposeApp"
             isStatic = true
         }
     }
-    
-    jvm("desktop")
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        moduleName = "composeApp"
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
+
     
     sourceSets {
-        val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+            api(libs.permissions)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.logging)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.navigation.compose)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.compose)
+            implementation(libs.koin.composeVM)
+            implementation(libs.serialization.json)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.json)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.okio)
+            implementation(libs.kotlinx.coroutines.core)
+            api(libs.kmpnotifier)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+            api(libs.webview)
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
+        iosMain.dependencies {
+            api(libs.permissions)
+            implementation(libs.logging)
+            implementation(libs.ktor.client.darwin)
+            implementation("co.touchlab:stately-common:2.0.5")
+            implementation(libs.logging)
         }
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 android {
-    namespace = "com.philblandford"
+    namespace = "com.philblandford.currencystrength"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.philblandford"
+        applicationId = "com.philblandford.currencystrength"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -105,6 +118,7 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    kspCommonMainMetadata(libs.room.compiler)
 }
 
 compose.desktop {

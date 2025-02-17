@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alerts_title">Your Alerts</string>
+    <string name="alerts_period">Period</string>
+    <string name="alerts_sample">Sample</string>
+    <string name="alerts_threshold">Threshold</string>
+    <string name="alerts_pair">Pair</string>
+    <string name="alerts_time">Time</string>
+    <string name="alerts_history_title">Alert History</string>">
+    <string name="add_alert_title">New Alert</string>
+    <string name="add_alert_cancel">Cancel</string>
+    <string name="add_alert_add">Add</string>
+    <string name="chart_last_alert">Your last alert:</string>
+    <string name="chart_help">Help</string>
+
+</resources>
