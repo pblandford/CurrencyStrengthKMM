@@ -7,6 +7,7 @@ import com.philblandford.currencystrength.common.ui.ScreenState
 import com.philblandford.currencystrength.features.addalert.usecase.AddAlert
 import com.philblandford.currencystrength.features.showalerts.ui.AlertsState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.math.roundToInt
 
 sealed class AddAlertState : ScreenState() {
     data class Main(
@@ -17,6 +18,7 @@ sealed class AddAlertState : ScreenState() {
         val sampleEntries: List<Int>,
         val maxThreshold: Float
     ) : AddAlertState()
+
     data object Added : AddAlertState()
 }
 
@@ -48,8 +50,9 @@ class AddAlertViewModel(private val addAlertUC: AddAlert) : BaseViewModel<AddAle
     }
 
     override fun onThresholdChange(threshold: Float) {
+        val rounded = (threshold * 10).roundToInt().toFloat() / 10
         updateMainState {
-            copy(threshold = threshold)
+            copy(threshold = rounded)
         }
     }
 
@@ -80,7 +83,7 @@ class AddAlertViewModel(private val addAlertUC: AddAlert) : BaseViewModel<AddAle
             period = Period.M5,
             sample = 50,
             threshold = 1.0f,
-            periodEntries = Period.entries,
+            periodEntries = Period.entries.filterNot { it == Period.H4 },
             sampleEntries = (10..100 step 10).toList(),
             maxThreshold = 10f
         )

@@ -12,4 +12,11 @@ data class CurrencyPair(val base: Currency? = null, val counter: Currency? = nul
         fun str(currency: Currency?): String = currency?.toString() ?: "-"
         return "${str(base)}/${str(counter)}"
     }
+
+    companion object {
+        fun fromString(str: String): CurrencyPair {
+            val parts = str.split("/")
+            return CurrencyPair(Currency.valueOf(parts[0]), Currency.valueOf(parts[1]))
+        }
+    }
 }

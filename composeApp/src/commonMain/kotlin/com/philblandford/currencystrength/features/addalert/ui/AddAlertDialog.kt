@@ -78,7 +78,7 @@ internal fun AddAlertInternal(
             Text(((state.threshold * 10).roundToInt().toFloat()/10).toString())
         }
         val stepSize = 0.1f
-        val valueRange = 0f..10f
+        val valueRange = 0.1f..10f
         val steps = ((valueRange.endInclusive - valueRange.start) / stepSize).toInt() - 1
         Slider(
             state.threshold,

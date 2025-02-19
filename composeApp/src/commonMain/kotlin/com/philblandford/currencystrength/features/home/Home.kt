@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.philblandford.currencystrength.common.model.Alert
 import com.philblandford.currencystrength.features.alerthistory.ui.AlertHistoryScreen
 import com.philblandford.currencystrength.features.chart.ui.ChartScreen
 import com.philblandford.currencystrength.features.showalerts.ui.AlertsScreen
@@ -35,7 +36,7 @@ private data class NavigationItem(val icon: ImageVector, val node: RouteNode)
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(notificationAlert: Alert? = null) {
     val navController = rememberNavController()
     val items = listOf(
         NavigationItem(Icons.Default.AccountBox, RouteNode.Charts),
@@ -43,12 +44,14 @@ fun HomeScreen() {
         NavigationItem(Icons.Default.AccountBox, RouteNode.AlertHistory)
     )
     var selectedItem by remember { mutableStateOf(items.first()) }
+    var alert by remember { mutableStateOf(notificationAlert) }
 
     Column(Modifier.fillMaxSize()) {
         Box(Modifier.fillMaxWidth().weight(1f)) {
             when (selectedItem.node) {
                 RouteNode.Charts -> {
-                    ChartScreen()
+                    ChartScreen(alert)
+                    alert = null
                 }
                 RouteNode.Alerts -> {
                     AlertsScreen()

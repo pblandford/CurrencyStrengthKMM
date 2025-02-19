@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -30,9 +32,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.philblandford.currencystrength.common.model.Alert
 import com.philblandford.currencystrength.common.model.Currency
+import com.philblandford.currencystrength.common.model.CurrencyPair
 import com.philblandford.currencystrength.common.ui.Spinner
 import com.philblandford.currencystrength.common.util.asString
 import com.philblandford.currencystrength.features.help.ui.HelpDialog
@@ -44,11 +48,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ChartScreen() {
+fun ChartScreen(alert: Alert? = null) {
     val viewModel: ChartViewModel = koinViewModel()
 
     LaunchedEffect(Unit) {
-        viewModel.init()
+        viewModel.init(alert)
     }
 
     DisposableEffect(Unit) {
@@ -137,6 +141,7 @@ private fun ChartScreenLandscape(state: ChartScreenState.Main, iface: ChartInter
             DataSet(it.currency.name, it.percentages, it.currency.color())
         })
         Spacer(Modifier.height(10.dp))
+        LastAlertLandscape(state.lastAlert)
     }
 }
 
@@ -179,17 +184,50 @@ private fun LastAlertPortrait(alert: Alert?) {
         Column {
             Text(stringResource(Res.string.chart_last_alert))
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                alert.lastPair.ColoredPairString()
+                Spacer(Modifier.width(10.dp))
                 Text(alert.period.name)
                 Spacer(Modifier.width(5.dp))
                 Text(alert.sample.toString())
                 Spacer(Modifier.width(5.dp))
                 Text(alert.threshold.toString())
-                Spacer(Modifier.width(5.dp))
-                Text(alert.lastPair.asString())
-                Spacer(Modifier.width(5.dp))
+                Spacer(Modifier.weight(1f))
                 Text(alert.lastAlert?.asString() ?: "")
             }
         }
+    }
+}
+
+@Composable
+private fun LastAlertLandscape(alert: Alert?) {
+    alert?.let {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(Res.string.chart_last_alert))
+            Spacer(Modifier.width(10.dp))
+            alert.lastPair.ColoredPairString()
+            Spacer(Modifier.width(10.dp))
+            Text(alert.period.name)
+            Spacer(Modifier.width(5.dp))
+            Text(alert.sample.toString())
+            Spacer(Modifier.width(5.dp))
+            Text(alert.threshold.toString())
+            Spacer(Modifier.width(10.dp))
+            Text(alert.lastAlert?.asString() ?: "")
+        }
+    }
+}
+
+@Composable
+fun CurrencyPair?.ColoredPairString(style: TextStyle = LocalTextStyle.current) {
+    val defaultColor = MaterialTheme.colorScheme.onSurface
+    this?.let {
+        Row {
+            Text(base.asString(), color = base?.color() ?: defaultColor, style = style)
+            Text("/", style = style)
+            Text(counter.asString(), color = counter?.color() ?: defaultColor, style = style)
+        }
+    } ?: run {
+        Text("-/-", style = style)
     }
 }
 

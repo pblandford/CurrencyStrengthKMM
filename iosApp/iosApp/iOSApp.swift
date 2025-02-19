@@ -15,7 +15,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        
+
+        print("launchOptions \(launchOptions)")
+
         dispatchGroup.enter()
         dispatchGroup.enter()
         
@@ -44,7 +46,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             print("🔍 Notification Authorization Status: \(settings.authorizationStatus.rawValue)")
         }
 
-        
+
+
         dispatchGroup.notify(queue: .main) {
             NotificationCenter.default.post(name: .didReceiveFCMToken, object: self.fcmToken)
         }
@@ -62,6 +65,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
          // Show banner and play sound
          completionHandler([.banner, .sound])
      }
+
+
+     func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                 didReceive response: UNNotificationResponse,
+                                 withCompletionHandler completionHandler: @escaping () -> Void) {
+         print("Background notification received")
+         let userInfo = response.notification.request.content.userInfo
+         print("period \(userInfo["period"])")
+         completionHandler()
+     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -74,8 +87,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         Messaging.messaging().apnsToken = deviceToken
     }
-    
-    
+
+
+
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError
                      error: Error) {

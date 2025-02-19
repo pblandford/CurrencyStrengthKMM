@@ -23,7 +23,7 @@ class App : Application() {
 
         NotifierManager.initialize(
             configuration = NotificationPlatformConfiguration.Android(
-                notificationIconResId = R.drawable.ic_launcher_playstore,
+                notificationIconResId = R.drawable.ic_launcher_rounded,
                 showPushNotification = true,
             )
         )

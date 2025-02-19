@@ -14,7 +14,7 @@ import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import kotlinx.serialization.json.Json
 
-//const val BASE_URL = "http://192.168.0.33:5000"
+//const val BASE_URL = "http://192.168.0.101:5000"
 //const val BASE_URL = "http://10.0.2.2:5000"
 const val BASE_URL = "https://currencystrength.duckdns.org"
 

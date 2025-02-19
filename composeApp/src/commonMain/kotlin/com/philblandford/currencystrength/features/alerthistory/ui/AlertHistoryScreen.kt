@@ -30,6 +30,7 @@ import com.philblandford.currencystrength.common.model.Alert
 import com.philblandford.currencystrength.common.model.Currency
 import com.philblandford.currencystrength.common.model.CurrencyPair
 import com.philblandford.currencystrength.common.util.asString
+import com.philblandford.currencystrength.features.chart.ui.ColoredPairString
 import currencystrengthcmm.composeapp.generated.resources.Res
 import currencystrengthcmm.composeapp.generated.resources.alerts_history_title
 import currencystrengthcmm.composeapp.generated.resources.alerts_pair
@@ -78,26 +79,17 @@ private fun AlertHistoryInternal(alertHistoryState: AlertHistoryState.Loaded) {
     }
 }
 
-@Composable
-private fun HeaderRow() {
-    Row(Modifier.fillMaxWidth()) {
-        TableCell(text = stringResource(Res.string.alerts_period), weight = .2f)
-        TableCell(text = stringResource(Res.string.alerts_sample), weight = .2f)
-        TableCell(text = stringResource(Res.string.alerts_threshold), weight = .2f)
-        TableCell(text = stringResource(Res.string.alerts_pair), weight = .2f)
-        TableCell(text = stringResource(Res.string.alerts_time), weight = .2f)
-        Spacer(Modifier.weight(0.1f))
-    }
-}
 
 @Composable
 private fun AlertRow(alert: Alert) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        TableCell(0.15f) {
+            alert.lastPair.ColoredPairString(style = MaterialTheme.typography.bodySmall)
+        }
+        TableCell(text = alert.lastAlert?.asString() ?: "", weight = .3f)
         TableCell(text = alert.period.name, weight = .1f)
         TableCell(text = alert.sample.toString(), weight = .1f)
         TableCell(text = alert.threshold.toString(), weight = .1f)
-        TableCell(text = alert.lastPair.asString(), weight = .15f)
-        TableCell(text = alert.lastAlert?.asString() ?: "", weight = .3f)
     }
 }
 
@@ -115,5 +107,20 @@ fun RowScope.TableCell(
         style = MaterialTheme.typography.bodySmall
     )
 }
+@Composable
+fun RowScope.TableCell(
+    weight: Float,
+    content:@Composable ()->Unit,
+) {
+    Box(
+        Modifier
+            .border(1.dp, MaterialTheme.colorScheme.onSurface)
+            .weight(weight)
+            .padding(8.dp)) {
+        content()
+    }
+
+}
+
 
 

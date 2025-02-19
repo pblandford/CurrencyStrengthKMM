@@ -4,6 +4,9 @@ import com.philblandford.currencystrength.common.log.LogLevel
 import com.philblandford.currencystrength.common.log.logger
 import kotlinx.coroutines.flow.MutableStateFlow
 
+expect fun Throwable.toUserFriendlyMessage(): String
+
+
 class ErrorHandler {
     val errorFlow = MutableStateFlow<Throwable?>(null)
 

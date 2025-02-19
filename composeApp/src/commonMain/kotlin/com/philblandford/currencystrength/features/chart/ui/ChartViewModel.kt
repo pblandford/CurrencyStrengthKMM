@@ -12,6 +12,8 @@ import com.philblandford.currencystrength.common.ui.ScreenState
 import com.philblandford.currencystrength.common.util.flatMap
 import com.philblandford.currencystrength.features.alerthistory.usecase.GetAlertHistory
 import com.philblandford.currencystrength.features.chart.usecase.GetPercentages
+import com.philblandford.currencystrength.features.notification.usecase.ClearNotifications
+import com.philblandford.currencystrength.features.notification.usecase.GetNotificationFlow
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +26,7 @@ sealed class ChartScreenState : ScreenState() {
         val period: Period,
         val sample: Int,
         val percentSets: List<PercentSet> = listOf(),
-        val periodEntries: List<Period> = Period.entries,
+        val periodEntries: List<Period> = Period.entries.filterNot { it == Period.H4 },
         val sampleEntries: List<Int> = (10..100 step 10).toList(),
         val isPortrait: Boolean = true,
         val lastAlert: Alert? = null
@@ -43,7 +45,9 @@ interface ChartInterface {
 class ChartViewModel(
     private val getPercentagesUC: GetPercentages,
     private val orientationManager: OrientationManager,
-    private val getAlertHistory: GetAlertHistory
+    private val getAlertHistory: GetAlertHistory,
+    private val getNotificationFlow: GetNotificationFlow,
+    private val clearNotifications: ClearNotifications
 ) :
     BaseViewModel<ChartScreenState>(), ChartInterface {
     override val state = MutableStateFlow<ChartScreenState>(
@@ -54,7 +58,15 @@ class ChartViewModel(
     )
     private var refreshJob: Job? = null
 
-    fun init() {
+    fun init(alert: Alert?) {
+        viewModelScope.launch {
+            clearNotifications()
+        }
+        alert?.let {
+            updateMainState {
+                copy(period = it.period, sample = it.sample)
+            }
+        }
         checkForRefresh()
         viewModelScope.launch {
             orientationManager.orientationFlow.collectLatest {
@@ -62,6 +74,12 @@ class ChartViewModel(
                     (this as? ChartScreenState.Main)?.copy(isPortrait = it == Orientation.PORTRAIT)
                         ?: this
                 }
+            }
+        }
+        viewModelScope.launch {
+            getNotificationFlow().collectLatest {
+                log("Got notification")
+                refresh()
             }
         }
     }
@@ -95,7 +113,8 @@ class ChartViewModel(
                         updateMainState {
                             copy(
                                 percentSets = percentages,
-                                lastAlert = alerts.lastOrNull()
+                                lastAlert = alerts.filter { it.lastAlert != null }
+                                    .maxByOrNull { it.lastAlert!! }
                             )
                         }
                     }

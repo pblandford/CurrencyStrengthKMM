@@ -20,6 +20,8 @@ import com.philblandford.currencystrength.features.showalerts.ui.AlertsViewModel
 import com.philblandford.currencystrength.features.showalerts.usecase.GetAlerts
 import com.philblandford.currencystrength.features.chart.usecase.GetPercentages
 import com.philblandford.currencystrength.features.chart.ui.ChartViewModel
+import com.philblandford.currencystrength.features.notification.usecase.GetNotificationFlow
+import com.philblandford.currencystrength.features.notification.usecase.ClearNotifications
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 
@@ -40,6 +42,8 @@ val module = module {
     factoryOf(::GetAlerts)
     factoryOf(::GetLoggedAlerts)
     factoryOf(::GetAlertHistory)
+    factoryOf(::GetNotificationFlow)
+    factoryOf(::ClearNotifications)
 
     viewModelOf(::AppViewModel)
     viewModelOf(::AddAlertViewModel)
