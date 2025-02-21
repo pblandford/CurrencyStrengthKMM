@@ -29,11 +29,11 @@ fun DrawScope.drawLine(dataSet: DataSet, maxAbsolute:Float) {
     val height = size.height
 
     val minValue = -maxAbsolute
+    val step = width / (dataSet.data.size - 1)
 
     val path = Path().apply {
-
         dataSet.data.forEachIndexed { index, value ->
-            val x = index * (width / dataSet.data.size)
+            val x = index * step
             val y = height - ((value - minValue) / (maxAbsolute - minValue)) * height
             if (index == 0) moveTo(x, y) else lineTo(x, y)
         }

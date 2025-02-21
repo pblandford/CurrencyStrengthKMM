@@ -157,7 +157,7 @@ private fun ChartScreenLandscape(state: ChartScreenState.Main, iface: ChartInter
 
 @Composable
 private fun LegendPortrait() {
-    LazyVerticalGrid(GridCells.Fixed(2), Modifier.fillMaxWidth(0.5f)) {
+    LazyVerticalGrid(GridCells.Fixed(4), Modifier.fillMaxWidth()) {
         items(Currency.entries) { currency ->
             Row(
                 Modifier.padding(5.dp),
@@ -249,7 +249,7 @@ private fun Currency.color(): Color {
         Currency.USD -> Color.Green
         Currency.EUR -> Color.Cyan
         Currency.GBP -> Color.Red
-        Currency.AUD -> Color.Blue
+        Currency.AUD -> Color(0xff0000ff)
         Currency.NZD -> Color.Gray
         Currency.CAD -> Color.Magenta
         Currency.CHF -> Color.Yellow

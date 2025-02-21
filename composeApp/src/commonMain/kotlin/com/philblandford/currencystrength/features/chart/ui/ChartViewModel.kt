@@ -52,7 +52,7 @@ class ChartViewModel(
     override val state = MutableStateFlow<ChartScreenState>(
         ChartScreenState.Main(
             Period.M5, 50,
-            isPortrait = orientationManager.isPortrait()
+            isPortrait = orientationManager.isPortrait() && !orientationManager.isTablet()
         )
     )
     private var refreshJob: Job? = null
@@ -70,7 +70,10 @@ class ChartViewModel(
         viewModelScope.launch {
             orientationManager.orientationFlow.collectLatest {
                 updateState {
-                    (this as? ChartScreenState.Main)?.copy(isPortrait = it == Orientation.PORTRAIT)
+                    (this as? ChartScreenState.Main)?.copy(
+                        isPortrait = it == Orientation.PORTRAIT
+                                && !orientationManager.isTablet()
+                    )
                         ?: this
                 }
             }
@@ -79,6 +82,13 @@ class ChartViewModel(
             getNotificationFlow().collectLatest {
                 log("Got notification")
                 refresh()
+            }
+        }
+        viewModelScope.launch {
+            getAlertHistory().collectLatest {
+                updateMainState {
+                    copy(lastAlert = it.firstOrNull())
+                }
             }
         }
     }
@@ -106,20 +116,15 @@ class ChartViewModel(
     override fun refresh() {
         (state.value as? ChartScreenState.Main)?.let { state ->
             tryResult(displayErrorToUser = false) {
-                getPercentagesUC(state.period, state.sample).flatMap { percentages ->
-                    getAlertHistory().onSuccess { alerts ->
-                        updateMainState {
-                            copy(
-                                percentSets = percentages,
-                                lastAlert = alerts.filter { it.lastAlert != null }
-                                    .maxByOrNull { it.lastAlert!! }
-                            )
-                        }
+                getPercentagesUC(state.period, state.sample).onSuccess { percentages ->
+                    updateMainState {
+                        copy(percentSets = percentages)
                     }
                 }
             }
         }
     }
+
 
     private fun updateMainState(func: ChartScreenState.Main.() -> ChartScreenState.Main) {
         updateState {

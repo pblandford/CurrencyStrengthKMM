@@ -42,7 +42,7 @@ val module = module {
     factoryOf(::GetPercentages)
     factoryOf(::GetAlerts)
     factoryOf(::GetLoggedAlerts)
-    factoryOf(::GetAlertHistory)
+    singleOf(::GetAlertHistory)
     factoryOf(::GetNotificationFlow)
     factoryOf(::ClearNotifications)
 

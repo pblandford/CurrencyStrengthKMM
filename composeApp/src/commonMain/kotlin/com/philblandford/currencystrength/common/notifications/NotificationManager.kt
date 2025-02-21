@@ -2,8 +2,10 @@ package com.philblandford.currencystrength.common.notifications
 
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.philblandford.currencystrength.common.log.log
+import io.ktor.util.NonceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -21,10 +23,14 @@ class NotificationManager(
     val haveTokenFlow = MutableStateFlow(false)
 
     init {
+        coroutineScope.launch {
+            haveTokenFlow.emit(getToken().isSuccess)
+        }
         NotifierManager.addListener(object : NotifierManager.Listener {
             override fun onNewToken(token: String) {
                 log("onNewToken: $token") //Update user token in the server if needed
                 coroutineScope.launch {
+                    delay(500)
                     haveTokenFlow.emit(true)
                 }
             }
