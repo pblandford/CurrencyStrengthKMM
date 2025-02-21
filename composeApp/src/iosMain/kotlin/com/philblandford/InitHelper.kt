@@ -22,14 +22,6 @@ fun initNotifications() {
             showPushNotification = true
         )
     )
-    NotifierManager.addListener(object : NotifierManager.Listener {
-        override fun onNewToken(token: String) {
-            log("onNewToken: $token") //Update user token in the server if needed
-        }
 
-        override fun onPushNotification(title: String?, body: String?) {
-            log("onPushNotification: $title, $body")
-        }
-    })
 }
 

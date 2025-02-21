@@ -50,9 +50,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 CurrencyPair.fromString(it)
             }
             val threshold = extras.getString("threshold")?.toFloatOrNull() ?: 0f
-            log(
-                "XXX Got alert: period=$period, sample=$sample, pair=$pair, threshold=$threshold"
-            )
+            log("XXX Got alert: period=$period, sample=$sample, pair=$pair, threshold=$threshold")
             if (period != null && pair != null) {
                 Alert(Period.valueOf(period), sample, threshold, pair)
             } else {

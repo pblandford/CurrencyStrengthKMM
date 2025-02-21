@@ -69,6 +69,7 @@ fun AlertHistoryScreen() {
 @Composable
 private fun AlertHistoryInternal(alertHistoryState: AlertHistoryState.Loaded) {
     Column(Modifier.fillMaxSize().padding(10.dp)) {
+        Spacer(Modifier.height(20.dp))
         Text(stringResource(Res.string.alerts_history_title))
         Spacer(Modifier.height(20.dp))
         LazyColumn {

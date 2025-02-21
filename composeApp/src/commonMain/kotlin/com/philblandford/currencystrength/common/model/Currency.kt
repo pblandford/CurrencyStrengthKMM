@@ -3,7 +3,12 @@ package com.philblandford.currencystrength.common.model
 import kotlinx.serialization.Serializable
 
 enum class Currency {
-    USD, EUR, GBP, AUD, NZD, CAD, CHF, JPY
+    USD, EUR, GBP, AUD, NZD, CAD, CHF, JPY;
+    companion object {
+        fun fromString(str:String):Currency? {
+            return if (str == "-") null else Currency.valueOf(str)
+        }
+    }
 }
 
 @Serializable
@@ -16,7 +21,7 @@ data class CurrencyPair(val base: Currency? = null, val counter: Currency? = nul
     companion object {
         fun fromString(str: String): CurrencyPair {
             val parts = str.split("/")
-            return CurrencyPair(Currency.valueOf(parts[0]), Currency.valueOf(parts[1]))
+            return CurrencyPair(Currency.fromString(parts[0]), Currency.fromString(parts[1]))
         }
     }
 }

@@ -17,6 +17,8 @@ import platform.UIKit.UIApplicationDidChangeStatusBarOrientationNotification
 import platform.UIKit.UIDeviceOrientationDidChangeNotification
 import platform.UIKit.UIScreen
 import platform.darwin.NSObject
+import platform.UIKit.UIDevice
+import platform.UIKit.UIUserInterfaceIdiomPad
 
 @OptIn(ExperimentalForeignApi::class)
 private class ConfigurationObserver(private val onChange: () -> Unit) : NSObject() {
@@ -50,6 +52,10 @@ class OrientationManagerIos : OrientationManager {
     }.apply { start() }
 
     override fun isPortrait(): Boolean = getCurrentOrientation() == Orientation.PORTRAIT
+
+    override fun isTablet(): Boolean {
+        return UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad
+    }
 
     @OptIn(ExperimentalForeignApi::class)
     private fun getCurrentOrientation(): Orientation {

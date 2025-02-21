@@ -79,6 +79,7 @@ internal fun AlertsScreenInternal(
 
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().padding(10.dp)) {
+            Spacer(Modifier.height(20.dp))
             Text(stringResource(Res.string.alerts_title))
             Spacer(Modifier.height(20.dp))
             HeaderRow()

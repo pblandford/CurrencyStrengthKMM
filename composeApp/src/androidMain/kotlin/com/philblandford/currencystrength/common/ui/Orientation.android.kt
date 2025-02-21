@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class OrientationManagerAndroid(private val context: Context) : OrientationManager {
-    override val orientationFlow: MutableStateFlow<Orientation> = MutableStateFlow(Orientation.PORTRAIT)
+    override val orientationFlow: MutableStateFlow<Orientation> = MutableStateFlow(
+        getCurrentOrientation(context)
+    )
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     fun updateConfig() {
@@ -20,6 +22,11 @@ class OrientationManagerAndroid(private val context: Context) : OrientationManag
     override fun isPortrait(): Boolean {
         val orientation = context.resources.configuration.orientation
         return orientation == Configuration.ORIENTATION_PORTRAIT
+    }
+
+    override fun isTablet(): Boolean {
+        val screenLayout = context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+        return screenLayout >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }
 
     private fun getCurrentOrientation(context: Context): Orientation {

@@ -12,5 +12,6 @@
     <string name="add_alert_add">Add</string>
     <string name="chart_last_alert">Your last alert:</string>
     <string name="chart_help">Help</string>
+    <string name="common_ok">OK</string>
 
 </resources>

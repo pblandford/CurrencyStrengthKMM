@@ -32,11 +32,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.philblandford.currencystrength.common.model.Alert
 import com.philblandford.currencystrength.common.model.Currency
 import com.philblandford.currencystrength.common.model.CurrencyPair
+import com.philblandford.currencystrength.common.ui.AutoResizeText
 import com.philblandford.currencystrength.common.ui.Spinner
 import com.philblandford.currencystrength.common.util.asString
 import com.philblandford.currencystrength.features.help.ui.HelpDialog
@@ -75,7 +79,9 @@ private fun ChartScreenInternal(state: ChartScreenState.Main, iface: ChartInterf
             showHelp = !showHelp
         }
     } else {
-        ChartScreenLandscape(state, iface)
+        ChartScreenLandscape(state, iface) {
+            showHelp = !showHelp
+        }
     }
 
     HelpDialog(showHelp) {
@@ -121,9 +127,13 @@ internal fun ChartScreenPortrait(
 }
 
 @Composable
-private fun ChartScreenLandscape(state: ChartScreenState.Main, iface: ChartInterface) {
+private fun ChartScreenLandscape(state: ChartScreenState.Main, iface: ChartInterface,
+                                 toggleHelp: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(10.dp)) {
+        Spacer(Modifier.height(20.dp))
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.Info, stringResource(Res.string.chart_help),
+                Modifier.clickable { toggleHelp() })
             LegendLandscape(Modifier.weight(1f))
             Spacer(Modifier.width(20.dp))
             Spinner(Modifier, state.period, state.periodEntries, { name }, iface::onPeriodChange)
@@ -147,15 +157,15 @@ private fun ChartScreenLandscape(state: ChartScreenState.Main, iface: ChartInter
 
 @Composable
 private fun LegendPortrait() {
-    LazyVerticalGrid(GridCells.Fixed(2), Modifier.fillMaxWidth()) {
+    LazyVerticalGrid(GridCells.Fixed(2), Modifier.fillMaxWidth(0.5f)) {
         items(Currency.entries) { currency ->
             Row(
-                Modifier.fillMaxWidth().padding(5.dp),
+                Modifier.padding(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(currency.name)
                 Spacer(Modifier.width(5.dp))
-                Box(Modifier.weight(1f).height(2.dp).background(currency.color()))
+                Box(Modifier.width(50.dp).height(2.dp).background(currency.color()))
             }
         }
     }
@@ -166,12 +176,12 @@ private fun LegendLandscape(modifier: Modifier) {
     Row(modifier) {
         Currency.entries.forEach { currency ->
             Row(
-                Modifier.weight(1f / 8).padding(5.dp),
+                Modifier.weight(1f). padding(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(currency.name)
                 Spacer(Modifier.width(5.dp))
-                Box(Modifier.weight(1f).height(2.dp).background(currency.color()))
+                Box(Modifier.width(50.dp).height(2.dp).background(currency.color()))
             }
         }
 
@@ -220,15 +230,18 @@ private fun LastAlertLandscape(alert: Alert?) {
 @Composable
 fun CurrencyPair?.ColoredPairString(style: TextStyle = LocalTextStyle.current) {
     val defaultColor = MaterialTheme.colorScheme.onSurface
-    this?.let {
-        Row {
-            Text(base.asString(), color = base?.color() ?: defaultColor, style = style)
-            Text("/", style = style)
-            Text(counter.asString(), color = counter?.color() ?: defaultColor, style = style)
-        }
-    } ?: run {
-        Text("-/-", style = style)
+    val annotatedString = buildAnnotatedString {
+        this@ColoredPairString?.let {
+            withStyle(style = SpanStyle(color = base?.color() ?: defaultColor)) {
+                append(base.asString())
+            }
+            append("/")
+            withStyle(style = SpanStyle(color = counter?.color() ?: defaultColor)) {
+                append(counter.asString())
+            }
+        } ?: append("-/-")
     }
+    AutoResizeText(text = annotatedString, style = style, maxLines = 1)
 }
 
 private fun Currency.color(): Color {

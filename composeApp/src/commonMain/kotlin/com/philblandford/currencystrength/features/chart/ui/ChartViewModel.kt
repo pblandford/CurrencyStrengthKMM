@@ -41,7 +41,6 @@ interface ChartInterface {
     fun isPortrait(): Boolean
 }
 
-
 class ChartViewModel(
     private val getPercentagesUC: GetPercentages,
     private val orientationManager: OrientationManager,
@@ -85,7 +84,6 @@ class ChartViewModel(
     }
 
     fun dispose() {
-        log("dispose refresh")
         refreshJob?.cancel()
     }
 
@@ -133,7 +131,6 @@ class ChartViewModel(
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
             while (isActive) {
-                log("Checking for refresh")
                 refresh()
                 delay(1000 * 60)
             }

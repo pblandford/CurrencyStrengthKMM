@@ -14,7 +14,7 @@ class PermissionGranterAndroid(private val permissionsController: PermissionsCon
         onDenied: suspend (shouldShowRationale: Boolean) -> Unit
     ) {
         try {
-        //    permissionsController.providePermission(Permission.valueOf(permission))
+            permissionsController.providePermission(Permission.valueOf(permission))
             onGranted()
         } catch (e: DeniedException) {
             onDenied(true)

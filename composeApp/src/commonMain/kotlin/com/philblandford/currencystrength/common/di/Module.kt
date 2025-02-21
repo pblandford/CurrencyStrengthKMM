@@ -16,6 +16,7 @@ import com.philblandford.currencystrength.features.alerthistory.usecase.GetAlert
 import com.philblandford.currencystrength.features.alerthistory.ui.AlertHistoryViewModel
 import com.philblandford.currencystrength.features.logalert.usecase.GetLoggedAlerts
 import com.philblandford.currencystrength.features.deletealert.usecase.DeleteAlert
+import com.philblandford.currencystrength.features.home.ui.HomeViewModel
 import com.philblandford.currencystrength.features.showalerts.ui.AlertsViewModel
 import com.philblandford.currencystrength.features.showalerts.usecase.GetAlerts
 import com.philblandford.currencystrength.features.chart.usecase.GetPercentages
@@ -50,4 +51,5 @@ val module = module {
     viewModelOf(::AlertsViewModel)
     viewModelOf(::ChartViewModel)
     viewModelOf(::AlertHistoryViewModel)
+    viewModelOf(::HomeViewModel)
 }

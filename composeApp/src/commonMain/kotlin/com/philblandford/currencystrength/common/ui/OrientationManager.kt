@@ -8,5 +8,6 @@ enum class Orientation {
 
 interface OrientationManager {
     fun isPortrait(): Boolean
+    fun isTablet():Boolean
     val orientationFlow:StateFlow<Orientation>
 }
