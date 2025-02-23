@@ -70,6 +70,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.websockets)
             implementation(libs.kotlinx.datetime)
             implementation(libs.okio)
             implementation(libs.kotlinx.coroutines.core)
@@ -100,8 +101,8 @@ android {
         applicationId = "org.philblandford.currencystrengthindex"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 35
-        versionName = "2.0"
+        versionCode = 36
+        versionName = "2.0.1"
     }
     packaging {
         resources {

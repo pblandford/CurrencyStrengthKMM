@@ -26,6 +26,7 @@ object KMMDateTimeSerializer : KSerializer<LocalDateTime> {
     }
 }
 
+
 object CurrencyPairSerializer : KSerializer<CurrencyPair> {
 
     override val descriptor: SerialDescriptor =

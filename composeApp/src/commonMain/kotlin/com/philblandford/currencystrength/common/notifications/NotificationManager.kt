@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 
 interface NotificationManagerPlatform {
     fun clearNotifications()
+    fun setForegroundNotificationListener(listener: () -> Unit){}
 }
 
 class NotificationManager(
@@ -42,6 +43,12 @@ class NotificationManager(
                 }
             }
         })
+
+        notificationManagerPlatform.setForegroundNotificationListener {
+            coroutineScope.launch {
+                notificationFlow.emit(Unit)
+            }
+        }
     }
 
     suspend fun getToken(): Result<String> {

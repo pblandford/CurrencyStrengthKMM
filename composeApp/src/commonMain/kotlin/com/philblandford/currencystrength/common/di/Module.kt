@@ -9,14 +9,19 @@ import com.philblandford.currencystrength.common.error.ErrorHandler
 import com.philblandford.currencystrength.common.notifications.NotificationManager
 import com.philblandford.currencystrength.common.data.FileSystemManager
 import com.philblandford.currencystrength.common.data.RoomDatabaseManager
+import com.philblandford.currencystrength.common.alert.AlertRepository
 import com.philblandford.currencystrength.features.checkin.CheckIn
 import com.philblandford.currencystrength.features.addalert.ui.AddAlertViewModel
 import com.philblandford.currencystrength.features.addalert.usecase.AddAlert
 import com.philblandford.currencystrength.features.alerthistory.usecase.GetAlertHistory
+import com.philblandford.currencystrength.features.alerthistory.usecase.RefreshAlertHistory
+import com.philblandford.currencystrength.features.alerthistory.usecase.InitAlertRepository
 import com.philblandford.currencystrength.features.alerthistory.ui.AlertHistoryViewModel
 import com.philblandford.currencystrength.features.logalert.usecase.GetLoggedAlerts
 import com.philblandford.currencystrength.features.deletealert.usecase.DeleteAlert
 import com.philblandford.currencystrength.features.home.ui.HomeViewModel
+import com.philblandford.currencystrength.features.listenforalert.usecase.ListenForAlert
+import com.philblandford.currencystrength.features.listenforalert.usecase.GetAlertFlow
 import com.philblandford.currencystrength.features.showalerts.ui.AlertsViewModel
 import com.philblandford.currencystrength.features.showalerts.usecase.GetAlerts
 import com.philblandford.currencystrength.features.chart.usecase.GetPercentages
@@ -35,6 +40,7 @@ val module = module {
     singleOf(::NotificationManager)
     singleOf(::FileSystemManager)
     singleOf(::RoomDatabaseManager)
+    singleOf(::AlertRepository)
 
     factoryOf(::CheckIn)
     factoryOf(::AddAlert)
@@ -42,9 +48,13 @@ val module = module {
     factoryOf(::GetPercentages)
     factoryOf(::GetAlerts)
     factoryOf(::GetLoggedAlerts)
-    singleOf(::GetAlertHistory)
+    factoryOf(::GetAlertHistory)
     factoryOf(::GetNotificationFlow)
     factoryOf(::ClearNotifications)
+    factoryOf(::GetAlertFlow)
+    factoryOf(::ListenForAlert)
+    factoryOf(::RefreshAlertHistory)
+    factoryOf(::InitAlertRepository)
 
     viewModelOf(::AppViewModel)
     viewModelOf(::AddAlertViewModel)

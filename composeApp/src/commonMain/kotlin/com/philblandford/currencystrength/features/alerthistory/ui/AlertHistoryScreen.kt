@@ -80,17 +80,16 @@ private fun AlertHistoryInternal(alertHistoryState: AlertHistoryState.Loaded) {
     }
 }
 
-
 @Composable
 private fun AlertRow(alert: Alert) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        TableCell(0.15f) {
+        TableCell(0.17f) {
             alert.lastPair.ColoredPairString(style = MaterialTheme.typography.bodySmall)
         }
-        TableCell(text = alert.lastAlert?.asString() ?: "", weight = .3f)
-        TableCell(text = alert.period.name, weight = .1f)
-        TableCell(text = alert.sample.toString(), weight = .1f)
-        TableCell(text = alert.threshold.toString(), weight = .1f)
+        TableCell(text = alert.lastAlert?.asString() ?: "", weight = .27f)
+        TableCell(text = alert.period.name, weight = .08f)
+        TableCell(text = alert.sample.toString(), weight = .08f)
+        TableCell(text = alert.threshold.toString(), weight = .08f)
     }
 }
 

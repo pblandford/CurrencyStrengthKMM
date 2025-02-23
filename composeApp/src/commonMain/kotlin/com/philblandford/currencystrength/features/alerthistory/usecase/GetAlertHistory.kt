@@ -1,6 +1,7 @@
 package com.philblandford.currencystrength.features.alerthistory.usecase
 
 import androidx.compose.runtime.State
+import com.philblandford.currencystrength.common.alert.AlertRepository
 import com.philblandford.currencystrength.common.log.log
 import com.philblandford.currencystrength.common.model.Alert
 import com.philblandford.currencystrength.common.network.NetworkClient
@@ -14,34 +15,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class GetAlertHistory(
-    private val notificationManager: NotificationManager,
-    private val networkClient: NetworkClient) {
-    private val coroutineScope = CoroutineScope(Dispatchers.Default)
-    private val alertFlow = MutableStateFlow<List<Alert>>(listOf())
-
-    init {
-        coroutineScope.launch {
-            notificationManager.haveTokenFlow.collectLatest {
-                log("Have token $it")
-                if (it) {
-                    refresh()
-                    notificationManager.notificationFlow.collectLatest {
-                        refresh()
-                    }
-                }
-            }
-        }
-    }
-
-    private suspend fun refresh() {
-        notificationManager.getToken().onSuccess { token ->
-            networkClient.getJson<List<Alert>>("alerts/log/$token").onSuccess {
-                log("Got alerts")
-                alertFlow.emit(it.sortedByDescending { it.lastAlert })
-            }
-        }
-    }
-
-    operator fun invoke():StateFlow<List<Alert>> = alertFlow
+class GetAlertHistory(private val alertRepository: AlertRepository) {
+    operator fun invoke():StateFlow<List<Alert>> = alertRepository.alertHistoryFlow
 }
