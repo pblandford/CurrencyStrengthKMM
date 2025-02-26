@@ -17,7 +17,6 @@ import com.philblandford.currencystrength.features.alerthistory.usecase.GetAlert
 import com.philblandford.currencystrength.features.alerthistory.usecase.RefreshAlertHistory
 import com.philblandford.currencystrength.features.alerthistory.usecase.InitAlertRepository
 import com.philblandford.currencystrength.features.alerthistory.ui.AlertHistoryViewModel
-import com.philblandford.currencystrength.features.logalert.usecase.GetLoggedAlerts
 import com.philblandford.currencystrength.features.deletealert.usecase.DeleteAlert
 import com.philblandford.currencystrength.features.home.ui.HomeViewModel
 import com.philblandford.currencystrength.features.listenforalert.usecase.ListenForAlert
@@ -47,7 +46,6 @@ val module = module {
     factoryOf(::DeleteAlert)
     factoryOf(::GetPercentages)
     factoryOf(::GetAlerts)
-    factoryOf(::GetLoggedAlerts)
     factoryOf(::GetAlertHistory)
     factoryOf(::GetNotificationFlow)
     factoryOf(::ClearNotifications)

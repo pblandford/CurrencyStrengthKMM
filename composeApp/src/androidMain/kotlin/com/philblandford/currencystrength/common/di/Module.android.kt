@@ -1,6 +1,7 @@
 package com.philblandford.currencystrength.common.di
 
 import com.mmk.kmpnotifier.notification.NotifierManager
+import com.philblandford.currencystrength.common.audio.AudioPlayer
 import com.philblandford.currencystrength.common.data.KeyValueStore
 import com.philblandford.currencystrength.common.data.KeyValueStoreAndroid
 import com.philblandford.currencystrength.common.data.FileSystemConfig
@@ -13,6 +14,7 @@ import com.philblandford.currencystrength.common.permissions.PermissionGranter
 import com.philblandford.currencystrength.common.permissions.PermissionGranterAndroid
 import com.philblandford.currencystrength.common.ui.OrientationManager
 import com.philblandford.currencystrength.common.ui.OrientationManagerAndroid
+import com.philblandford.currencystrength.common.audio.AudioPlayerAndroid
 import dev.icerock.moko.permissions.PermissionsController
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -27,5 +29,6 @@ actual val platformModule: Module = module {
     singleOf(::FileSystemConfigAndroid).bind(FileSystemConfig::class)
     singleOf(::OrientationManagerAndroid).bind(OrientationManager::class)
     singleOf(::NotificationManagerAndroid).bind(NotificationManagerPlatform::class)
+    singleOf(::AudioPlayerAndroid).bind(AudioPlayer::class)
     single { getDatabaseBuilder(get()) }
 }

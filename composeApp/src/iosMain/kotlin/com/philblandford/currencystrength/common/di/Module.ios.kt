@@ -1,6 +1,8 @@
 package com.philblandford.currencystrength.common.di
 
 import com.mmk.kmpnotifier.notification.NotifierManager
+import com.philblandford.currencystrength.common.audio.AudioPlayer
+import com.philblandford.currencystrength.common.audio.AudioPlayerIos
 import com.philblandford.currencystrength.common.data.KeyValueStore
 import com.philblandford.currencystrength.common.data.KeyValueStoreIos
 import com.philblandford.currencystrength.common.notifications.NotificationManagerPlatform
@@ -20,6 +22,7 @@ actual val platformModule: Module = module {
     singleOf(::KeyValueStoreIos).bind(KeyValueStore::class)
     singleOf(::OrientationManagerIos).bind(OrientationManager::class)
     singleOf(::NotificationManagerIos).bind(NotificationManagerPlatform::class)
+    singleOf(::AudioPlayerIos).bind(AudioPlayer::class)
 
     single { NotifierManager }
 

@@ -51,6 +51,17 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             NotificationCenter.default.post(name: .didReceiveFCMToken, object: self.fcmToken)
         }
         
+   if let composeResourcesPath = Bundle.main.path(forResource: "compose-resources", ofType: nil) {
+       do {
+           let files = try FileManager.default.contentsOfDirectory(atPath: composeResourcesPath)
+           print("Files in compose-resources: \(files)")
+       } catch {
+           print("Error listing compose-resources files: \(error)")
+       }
+   } else {
+       print("compose-resources directory not found")
+   }
+        
         return true
     }
     

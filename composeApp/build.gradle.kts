@@ -51,6 +51,7 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.logging)
+            implementation(libs.exoplayer)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -101,8 +102,8 @@ android {
         applicationId = "org.philblandford.currencystrengthindex"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 36
-        versionName = "2.0.1"
+        versionCode = 38
+        versionName = "2.1.1"
     }
     packaging {
         resources {

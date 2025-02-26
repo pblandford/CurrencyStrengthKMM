@@ -119,8 +119,4 @@ fun RowScope.TableCell(
             .padding(8.dp)) {
         content()
     }
-
 }
-
-
-

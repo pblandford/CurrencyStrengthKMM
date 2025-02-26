@@ -9,9 +9,11 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.pingInterval
 import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
@@ -27,12 +29,25 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 
-const val WEBSOCKET_URL = "192.168.0.33:5000"
-const val BASE_URL = "http://192.168.0.33:5000"
-//const val WEBSOCKET_URL = "10.0.2.2:5000"
-//const val BASE_URL = "http://10.0.2.2:5000"
-//const val WEBSOCKET_URL = "currencystrength.duckdns.org"
-//const val BASE_URL = "https://currencystrength.duckdns.org"
+enum class ClientType {
+    LAN,
+    EMULATOR,
+    PRODUCTION
+}
+
+val clientType = ClientType.PRODUCTION
+
+val WEBSOCKET_URL = when (clientType) {
+    ClientType.LAN -> "192.168.0.33:5000"
+    ClientType.EMULATOR -> "10.0.2.2:5000"
+    ClientType.PRODUCTION -> "wss://currencystrength.duckdns.org"
+}
+
+val BASE_URL = when (clientType) {
+    ClientType.LAN -> "http://192.168.0.33:5000"
+    ClientType.EMULATOR -> "http://10.0.2.2:5000"
+    ClientType.PRODUCTION -> "https://currencystrength.duckdns.org"
+}
 
 open class NetworkClient {
     val jsonConfig = Json {
@@ -97,36 +112,37 @@ open class NetworkClient {
 
     suspend fun websocket(regid: String, onReceive: suspend (Alert) -> Unit) {
         log("Websocket $WEBSOCKET_URL")
-        httpClient.webSocket(
-            method = HttpMethod.Get,
-            host = WEBSOCKET_URL, path = "/ws/$regid"
-        ) {
-            val session = this
-            val receiveJob = launch {
-                for (frame in incoming) {
-                    when (frame) {
-                        is Frame.Text -> {
-                            val message = frame.readText()
-                            println("Received: $message")
-                            val alert = jsonConfig.decodeFromString<Alert>(message)
-                            onReceive(alert)
-                        }
+        runCatching {
 
-                        is Frame.Ping -> {
-                            send(Frame.Pong(frame.data)) // Respond to keep alive
-                        }
+            httpClient.webSocket("$WEBSOCKET_URL/ws/$regid") {
+                val receiveJob = launch {
+                    for (frame in incoming) {
+                        when (frame) {
+                            is Frame.Text -> {
+                                val message = frame.readText()
+                                println("Received: $message")
+                                val alert = jsonConfig.decodeFromString<Alert>(message)
+                                onReceive(alert)
+                            }
 
-                        is Frame.Close -> {
-                            println("WebSocket closing: ${frame.readReason()}")
-                            return@launch
-                        }
+                            is Frame.Ping -> {
+                                send(Frame.Pong(frame.data)) // Respond to keep alive
+                            }
 
-                        else -> {} // Ignore other frames
+                            is Frame.Close -> {
+                                println("WebSocket closing: ${frame.readReason()}")
+                                return@launch
+                            }
+
+                            else -> {} // Ignore other frames
+                        }
                     }
                 }
-            }
 
-            receiveJob.join()
+                receiveJob.join()
+            }
+        }.onFailure {
+            log("Websocket failed: $it")
         }
     }
 

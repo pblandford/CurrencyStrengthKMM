@@ -12,6 +12,7 @@ import com.philblandford.currencystrength.common.ui.ScreenState
 import com.philblandford.currencystrength.common.util.flatMap
 import com.philblandford.currencystrength.features.alerthistory.usecase.GetAlertHistory
 import com.philblandford.currencystrength.features.chart.usecase.GetPercentages
+import com.philblandford.currencystrength.features.listenforalert.usecase.GetAlertFlow
 import com.philblandford.currencystrength.features.notification.usecase.ClearNotifications
 import com.philblandford.currencystrength.features.notification.usecase.GetNotificationFlow
 import kotlinx.coroutines.Job
@@ -45,8 +46,8 @@ class ChartViewModel(
     private val getPercentagesUC: GetPercentages,
     private val orientationManager: OrientationManager,
     private val getAlertHistory: GetAlertHistory,
-    private val getNotificationFlow: GetNotificationFlow,
-    private val clearNotifications: ClearNotifications
+    private val clearNotifications: ClearNotifications,
+    private val getAlertFlow: GetAlertFlow
 ) :
     BaseViewModel<ChartScreenState>(), ChartInterface {
     override val state = MutableStateFlow<ChartScreenState>(
@@ -79,7 +80,7 @@ class ChartViewModel(
             }
         }
         viewModelScope.launch {
-            getNotificationFlow().collectLatest {
+            getAlertFlow().collectLatest {
                 log("Got notification")
                 refresh()
             }

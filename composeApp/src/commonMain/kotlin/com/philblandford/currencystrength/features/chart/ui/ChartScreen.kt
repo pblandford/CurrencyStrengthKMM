@@ -184,7 +184,6 @@ private fun LegendLandscape(modifier: Modifier) {
                 Box(Modifier.width(50.dp).height(2.dp).background(currency.color()))
             }
         }
-
     }
 }
 

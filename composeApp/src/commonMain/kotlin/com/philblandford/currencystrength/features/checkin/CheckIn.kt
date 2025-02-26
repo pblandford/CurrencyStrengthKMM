@@ -28,7 +28,7 @@ class CheckIn(
         log("Get token ${notificationManager.getToken()}")
         return notificationManager.getToken().flatMap {
             networkClient.post<String>("checkin", mapOf("regid" to it))
-        }.map {
+        }.flatMap {
             refreshAlertHistory()
             listenForAlert()
         }
