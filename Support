@@ -1,0 +1,27 @@
+For Forex traders - shows a graph of Absolute Currency Strength (Please read http://en.wikipedia.org/wiki/Absolute_currency_strength to understand the concepts).
+
+Set a period (eg M1, M15, D1 etc), a sample (steps of 10), and threshold in %. Get an alert when a currency moves above the threshold for the period and sample you selected.
+
+Same thing when a currency becomes weak, and moves below the threshold.
+
+For example:
+Click on 'Alarm Clock' icon, click the plus sign, see a dialog to add an alert.
+Set an alert for M1/50/0.2 - that is for 50 samples on the 1-minute chart, at a threshold of 0.2. Provided the markets are open, you should get an alert very quickly, meaning a currency has moved more than 0.2% in the last 50 minutes.
+
+Second Example:
+
+You set an alert for M5/50/2.0. This means you want an alert when a currency increases OR decreases by 2% on the 5-minute chart, relative to a point 50 5-minute periods before (that is 250 minutes).
+
+So, if USD has increased by 3.5%, and NZD has decreased by 2.1%, you get an alert saying "USD/NZD".
+
+Another example:
+
+You set an alert for H1/30/5.0 - 30 samples on the 1-hour chart, and a threshold of 5% (You need a bigger threshold for longer periods)
+
+Say CAD has decreased 6%, but no currency has increased more than 5% (the threshold you set) - you get an alert saying "-/CAD", meaning no rising currency, CAD is falling.
+
+You get alerts at the end of each period - that is, H1 alerts come at the start of each hour, M30 each half hour etc.
+
+Alerts are handled through Google Cloud Messaging, not by polling - so an M1 alert will not be battery heavy, as it is not checking every 1 minute - the server does that.
+
+Questions to philip.blandford@gmail.com
